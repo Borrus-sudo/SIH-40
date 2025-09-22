@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Map, { NavigationControl } from 'react-map-gl/maplibre';
 import DeckGL from '@deck.gl/react';
-import { HexagonLayer } from '@deck.gl/aggregation-layers';
-import { createClient } from '@supabase/supabase-js';
+import { LineLayer } from '@deck.gl/layers';
 
 const MAP_STYLE =
     'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json'; // free basemap
@@ -15,50 +14,21 @@ const INITIAL_VIEW_STATE = {
     bearing: 0,
 };
 
-const supabaseURL = 'https://faeqtixmrdxqlhxitvcu.supabase.co/';
-const key = import.meta.env.PUB_KEY; // ✅ safer naming convention (VITE_)
-const supabase = createClient(supabaseURL, key);
-
-async function loadData() {
-    const { data, error } = await supabase.from('measurements').select('*');
-    if (error) {
-        console.error('Supabase error:', error);
-        return [];
-    }
-    return data;
-}
-
 export default function MapWithDeck() {
     const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
-    const [data, setData] = useState([]);
 
-    useEffect(() => {
-        loadData().then((rows) => {
-            setData(rows);
-        });
-    }, []);
-
-    // Create the Hexagon layer once data is fetched
+    // Example LineLayer
     const layers = [
-        new HexagonLayer({
-            id: 'hexagon-layer',
-            data,
-            gpuAggregation: true,
-            extruded: true,
-            getPosition: (d) => [d.longitude, d.latitude], // ✅ map your table’s columns
-            getColorWeight: (d) => d.temperature ?? 1,
-            getElevationWeight: (d) => d.temperature ?? 1,
-            elevationScale: 4,
-            radius: 200,
-            pickable: true,
-            colorRange: [
-                [1, 152, 189],
-                [73, 227, 206],
-                [216, 254, 181],
-                [254, 237, 177],
-                [254, 173, 84],
-                [209, 55, 78],
+        new LineLayer({
+            id: 'line-layer',
+            data: [
+                { source: [-122.45, 37.78], target: [-122.4, 37.8] },
+                { source: [-122.45, 37.78], target: [-122.48, 37.73] },
             ],
+            getSourcePosition: (d) => d.source,
+            getTargetPosition: (d) => d.target,
+            getColor: [255, 0, 0],
+            getWidth: 5,
         }),
     ];
 
