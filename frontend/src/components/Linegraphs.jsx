@@ -3,8 +3,8 @@ import * as d3 from "d3";
 import { fetchMeasurements } from "../api/fetch";
 
 function HueLineGraph({
-  xField = 'depth',
-  yField = 'temperature',
+  xField = 'pres',
+  yField = 'temp',
   xLabel = 'Depth (m)',
   yLabel = 'Temperature (°C)'
 }) {

@@ -1,13 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Navbar from './components/Navbar';
 import Chatbot from './components/Chatbot';
 import Dashboard from './components/Dashboard';
 import Map from './components/map';
+import Geomaps from './components/Geomaps';
+import Bargraph from './components/Bargraph';
+import LayerHeatmap from './components/LayerHeatmap';
+import DensityContour from './components/DensityContour';
+import SalinityHeatmap from './components/SalinityHeatmap';
+import PressureHeatmap from './components/PressureHeatmap';
+import Heatmap from './charts/Heatmap';
+import Linegraphs from './components/Linegraphs';
+import { fetchMeasurements } from './api/fetch';
 
 function OceanVizApp() {
     const [chatOpen, setChatOpen] = useState(false);
     const [activePage, setActivePage] = useState('Dashboard');
-
+    fetchMeasurements().then(console.log);
     return (
         <div className="flex h-screen bg-[#021b2c] text-white">
             <Navbar activePage={activePage} setActivePage={setActivePage} />
@@ -21,11 +30,13 @@ function OceanVizApp() {
                         ← Back to Home
                     </button>
                 )}
-                {activePage === 'Dashboard' && <Dashboard setActivePage={setActivePage} />}
+                {activePage === 'Dashboard' && (
+                    <Dashboard setActivePage={setActivePage} />
+                )}
                 {activePage === 'Map' && <Map />}
                 {activePage === 'Geomaps' && <Geomaps />}
                 {activePage === 'Bargraph' && <Bargraph />}
-                {activePage === 'HeatmapGraph' && <HeatmapGraph />}
+                {activePage === 'HeatmapGraph' && <Heatmap />}
                 {activePage === 'LayerHeatmap' && <LayerHeatmap />}
                 {activePage === 'DensityContour' && <DensityContour />}
                 {activePage === 'Linegraphs' && <Linegraphs />}

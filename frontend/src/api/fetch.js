@@ -1,21 +1,73 @@
-import { createClient } from '@supabase/supabase-js';
+const ERDDAP_BASE_URL =
+    'https://erddap.ifremer.fr/erddap/tabledap/ArgoFloats.json';
 
-const supabaseURL = 'https://faeqtixmrdxqlhxitvcu.supabase.co/';
-const key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZhZXF0aXhtcmR4cWxoeGl0dmN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgzMDcwODEsImV4cCI6MjA3Mzg4MzA4MX0.XJpefECcjEMoXptvvoFgO3TR0aOI7S2dXa1OuiVGngw';
+// Variables in the desired order
+const VARIABLES = ['latitude', 'longitude', 'pres', 'time', 'temp', 'psal'];
 
-export const supabase = createClient(supabaseURL, key);
+const SAMPLE_CONSTRAINTS = {
+    longitude: { min: -75.0, max: -45.0 },
+    latitude: { min: 20.0, max: 30.0 },
+    pres: { min: 10.0, max: 10.0 },
+    time: { start: '2011-01-01T00:00:00Z', end: '2011-01-31T23:59:59Z' },
+};
 
-// Named export function for fetching measurements
-export async function fetchMeasurements() {
-  const { data, error } = await supabase
-    .from('measurements')
-    .select('*'); // you can replace '*' with 'depth, temperature, lat, long' if needed
+// Build ERDDAP URL
+function buildErddapUrl(baseUrl, variables, constraints) {
+    const vars = variables.join(',');
 
-  if (error) {
-    console.error('Error fetching measurements:', error);
-    return [];
-  }
+    const constraintStr = variables
+        .map((v) => {
+            switch (v) {
+                case 'longitude':
+                    return `longitude>=${constraints.longitude.min}&longitude<=${constraints.longitude.max}`;
+                case 'latitude':
+                    return `latitude>=${constraints.latitude.min}&latitude<=${constraints.latitude.max}`;
+                case 'pres':
+                    return `pres>=${constraints.pres.min}&pres<=${constraints.pres.max}`;
+                case 'time':
+                    return `time>=${constraints.time.start}&time<=${constraints.time.end}`;
+                default:
+                    return '';
+            }
+        })
+        .filter(Boolean)
+        .join('&');
 
-  return data;
+    return `${baseUrl}?${vars}&${constraintStr}`;
 }
 
+let cachedRows = [];
+// Front-end fetch using your Edge Function proxy
+export async function fetchMeasurements(constraints) {
+    if (cachedRows.length > 0) return cachedRows;
+    constraints = constraints || SAMPLE_CONSTRAINTS;
+    const targetUrl = buildErddapUrl(ERDDAP_BASE_URL, VARIABLES, constraints);
+    console.log(targetUrl);
+    // Replace with your deployed Edge Function URL
+    const edgeProxyUrl =
+        'https://kulyhcbjpmmogzomukyj.supabase.co/functions/v1/proxy';
+
+    const res = await fetch(edgeProxyUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: targetUrl }), // send target URL to proxy
+    });
+
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
+    const data = await res.json();
+
+    // Transform TableDAP rows into objects
+    const columns = data.table.columnNames;
+    const rows = data.table.rows.map((row) =>
+        columns.reduce((obj, key, i) => {
+            obj[key] = row[i];
+            return obj;
+        }, {})
+    );
+    cachedRows = rows;
+    console.log(rows);
+    return rows;
+}
+
+// fetchMeasurements(SAMPLE_CONSTRAINTS).catch((err) => console.error(err));
