@@ -5,9 +5,9 @@ const ERDDAP_BASE_URL =
 const VARIABLES = ['latitude', 'longitude', 'pres', 'time', 'temp', 'psal'];
 
 const SAMPLE_CONSTRAINTS = {
-    longitude: { min: -75.0, max: -45.0 },
-    latitude: { min: 20.0, max: 30.0 },
-    pres: { min: 10.0, max: 10.0 },
+    longitude: { max: -175.0, min: -200.0 },
+    latitude: { min: 10.0, max: 50.0 },
+    pres: { min: 0, max: 10.0 },
     time: { start: '2011-01-01T00:00:00Z', end: '2011-01-31T23:59:59Z' },
 };
 
@@ -66,7 +66,6 @@ export async function fetchMeasurements(constraints) {
         }, {})
     );
     cachedRows = rows;
-    console.log(rows);
     return rows;
 }
 

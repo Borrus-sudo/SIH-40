@@ -40,7 +40,7 @@ function HueLineGraph({
     // Y scale
     const yScale = d3
       .scaleLinear()
-      .domain([0, d3.max(data, (d) => d[yField])])
+      .domain([20, d3.max(data, (d) => d[yField])])
       .range([height - margin.bottom, margin.top]);
 
     // Color scale for points
@@ -74,12 +74,12 @@ function HueLineGraph({
       .attr("text-anchor", "middle")
       .text(yLabel);
 
-    // Line generator
-    const lineGenerator = d3
-      .line()
-      .x((d) => xScale(d[xField]))
-      .y((d) => yScale(d[yField]))
-      .curve(d3.curveMonotoneX); // smooth line
+    // // Line generator
+    // const lineGenerator = d3
+    //   .line()
+    //   .x((d) => xScale(d[xField]))
+    //   .y((d) => yScale(d[yField]))
+    //   .curve(d3.curveMonotoneX); // smooth line
 
     // Add line
     svg
@@ -88,7 +88,7 @@ function HueLineGraph({
       .attr("fill", "none")
       .attr("stroke", "steelblue")
       .attr("stroke-width", 2)
-      .attr("d", lineGenerator);
+    //   .attr("d", lineGenerator);
 
     // Add points
     svg

@@ -10,6 +10,7 @@ import DensityContour from './components/DensityContour';
 import SalinityHeatmap from './components/SalinityHeatmap';
 import PressureHeatmap from './components/PressureHeatmap';
 import Heatmap from './charts/Heatmap';
+import Hexagon from './charts/Hexagon';
 import Linegraphs from './components/Linegraphs';
 import { fetchMeasurements } from './api/fetch';
 
@@ -34,7 +35,7 @@ function OceanVizApp() {
                     <Dashboard setActivePage={setActivePage} />
                 )}
                 {activePage === 'Map' && <Map />}
-                {activePage === 'Geomaps' && <Geomaps />}
+                {activePage === 'Geomaps' && <Hexagon />}
                 {activePage === 'Bargraph' && <Bargraph />}
                 {activePage === 'HeatmapGraph' && <Heatmap />}
                 {activePage === 'LayerHeatmap' && <LayerHeatmap />}
