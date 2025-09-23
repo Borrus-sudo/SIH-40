@@ -12,7 +12,7 @@ const CONSTRAINTS = {
     time: { start: '2011-01-01T00:00:00Z', end: '2011-12-31T23:59:59Z' },
 };
 
-// Build properly encoded ERDDAP URL
+// Build ERDDAP URL
 function buildErddapUrl(baseUrl, variables, constraints) {
     const vars = variables.join(',');
 
@@ -34,14 +34,23 @@ function buildErddapUrl(baseUrl, variables, constraints) {
         .filter(Boolean)
         .join('&');
 
-    return encodeURI(`${baseUrl}?${vars}&${constraintStr}`);
+    return `${baseUrl}?${vars}&${constraintStr}`;
 }
 
+// Front-end fetch using your Edge Function proxy
 async function fetchArgoData() {
-    const url = buildErddapUrl(ERDDAP_BASE_URL, VARIABLES, CONSTRAINTS);
-    console.log('Fetching from:', url);
+    const targetUrl = buildErddapUrl(ERDDAP_BASE_URL, VARIABLES, CONSTRAINTS);
+    console.log(targetUrl);
+    // Replace with your deployed Edge Function URL
+    const edgeProxyUrl =
+        'https://kulyhcbjpmmogzomukyj.supabase.co/functions/v1/proxy';
 
-    const res = await fetch(url);
+    const res = await fetch(edgeProxyUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: targetUrl }), // send target URL to proxy
+    });
+
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
     const data = await res.json();
@@ -49,7 +58,10 @@ async function fetchArgoData() {
     // Transform TableDAP rows into objects
     const columns = data.table.columnNames;
     const rows = data.table.rows.map((row) =>
-        columns.reduce((obj, key, i) => ({ ...obj, [key]: row[i] }), {})
+        columns.reduce((obj, key, i) => {
+            obj[key] = row[i];
+            return obj;
+        }, {})
     );
 
     console.log('Transformed data:', rows);
@@ -57,5 +69,4 @@ async function fetchArgoData() {
 }
 
 // Usage
-// CORS issue
 fetchArgoData().catch((err) => console.error(err));

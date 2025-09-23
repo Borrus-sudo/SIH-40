@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Map, { NavigationControl } from 'react-map-gl/maplibre';
 import DeckGL from '@deck.gl/react';
 import { LineLayer } from '@deck.gl/layers';
