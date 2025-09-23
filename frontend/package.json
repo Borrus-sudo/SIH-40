@@ -22,6 +22,7 @@
     "esbuild": "^0.25.10",
     "framer-motion": "^12.23.12",
     "leaflet": "^1.9.4",
+    "leaflet.heat": "^0.2.0",
     "lucide": "^0.536.0",
     "lucide-react": "^0.536.0",
     "maplibre-gl": "^5.7.3",
