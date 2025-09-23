@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import Map, { NavigationControl } from 'react-map-gl/maplibre';
 import DeckGL from '@deck.gl/react';
 import { LineLayer } from '@deck.gl/layers';
+import maplibregl from 'maplibre-gl';
 
 const MAP_STYLE =
-    'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json'; // free basemap
+    'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json';
 
 const INITIAL_VIEW_STATE = {
     longitude: -122.45,
@@ -17,7 +18,6 @@ const INITIAL_VIEW_STATE = {
 export default function MapWithDeck() {
     const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
 
-    // Example LineLayer
     const layers = [
         new LineLayer({
             id: 'line-layer',
@@ -42,7 +42,7 @@ export default function MapWithDeck() {
             >
                 <Map
                     reuseMaps
-                    mapLib={import('maplibre-gl')}
+                    mapLib={maplibregl}
                     mapStyle={MAP_STYLE}
                     {...viewState}
                     onMove={(evt) => setViewState(evt.viewState)}

@@ -18,6 +18,8 @@
     "@supabase/supabase-js": "^2.57.4",
     "@tailwindcss/vite": "^4.1.11",
     "d3": "^7.9.0",
+    "deck.gl": "^9.1.14",
+    "esbuild": "^0.25.10",
     "framer-motion": "^12.23.12",
     "leaflet": "^1.9.4",
     "lucide": "^0.536.0",
@@ -45,6 +47,6 @@
     "globals": "^16.3.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.11",
-    "vite": "^7.0.4"
+    "vite": "^7.1.7"
   }
 }
