@@ -15,7 +15,7 @@ const INITIAL_VIEW_STATE = {
     bearing: 0,
 };
 
-export default function MapWithDeck() {
+export default function MapWithDeck({ className = "w-full h-full" }) {
     const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
 
     const layers = [
@@ -33,7 +33,7 @@ export default function MapWithDeck() {
     ];
 
     return (
-        <div className="w-screen h-screen">
+        <div className={className}>
             <DeckGL
                 initialViewState={viewState}
                 controller={true}

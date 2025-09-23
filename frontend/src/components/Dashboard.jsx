@@ -1,5 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
+import Geomaps from './Geomaps';
+import Bargraph from './Bargraph';
+import HeatmapGraph from './Heatmap';
+import LayerHeatmap from './LayerHeatmap';
+import DensityContour from './DensityContour';
+import Linegraphs from './Linegraphs';
 
 function LineChart({ data, title, color }) {
     const svgRef = useRef();
@@ -53,7 +59,7 @@ function LineChart({ data, title, color }) {
     );
 }
 
-function Dashboard() {
+function Dashboard({ setActivePage }) {
     const tempData = Array.from({ length: 20 }, (_, i) => ({
         x: i * 5,
         y: Math.random() * 25,
@@ -67,19 +73,30 @@ function Dashboard() {
         y: Math.random() * 1000,
     }));
 
+    const tiles = [
+        { key: 'Geomaps', title: 'Geomaps', img: 'geomaps.jpg' },
+        { key: 'HeatmapGraph', title: 'Heatmap (Graph)', img: 'heatmap-graph.jpg' },
+        { key: 'Bargraph', title: 'Bargraph', img: 'bargraph.jpg' },
+        { key: 'LayerHeatmap', title: 'Heatmap (Map)', img: 'heatmap-map.jpg' },
+        { key: 'DensityContour', title: 'DensityContour', img: 'density.jpg' },
+        { key: 'Linegraphs', title: 'Linegraphs', img: 'linegraphs.jpg' },
+    ]
+
     return (
-        <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <LineChart
-                title="Temperature vs Depth"
-                data={tempData}
-                color="cyan"
-            />
-            <LineChart
-                title="Salinity vs Depth"
-                data={salData}
-                color="orange"
-            />
-            <LineChart title="Pressure vs Depth" data={presData} color="lime" />
+        <div className="p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {tiles.map(tile => (
+                <button
+                    key={tile.key}
+                    onClick={() => setActivePage && setActivePage(tile.key)}
+                    className="group bg-[#03263d] rounded-xl shadow-xl border border-cyan-700 overflow-hidden text-left"
+                >
+                    <div className="h-56 w-full bg-cover bg-center" style={{ backgroundImage: `url(/${tile.img})` }} />
+                    <div className="p-4">
+                        <h3 className="text-lg font-semibold group-hover:text-cyan-300 transition">{tile.title}</h3>
+                        <p className="text-sm text-slate-300">Click to open</p>
+                    </div>
+                </button>
+            ))}
         </div>
     );
 }
