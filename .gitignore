@@ -24,3 +24,4 @@ research
 *.sln
 *.sw?
 .env
+data-entry

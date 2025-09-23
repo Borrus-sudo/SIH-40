@@ -1,17 +1,9 @@
-
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Navbar from './components/Navbar';
 import Chatbot from './components/Chatbot';
 import Dashboard from './components/Dashboard';
 import Map from './components/map';
-import Geomaps from './components/Geomaps';
-import Bargraph from './components/Bargraph';
-import HeatmapGraph from './components/Heatmap';
-import LayerHeatmap from './components/LayerHeatmap';
-import DensityContour from './components/DensityContour';
-import Linegraphs from './components/Linegraphs';
-import SalinityHeatmap from './components/SalinityHeatmap';
-import PressureHeatmap from './components/PressureHeatmap';
+
 function OceanVizApp() {
     const [chatOpen, setChatOpen] = useState(false);
     const [activePage, setActivePage] = useState('Dashboard');
