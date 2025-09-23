@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Navbar from './components/Navbar';
 import Chatbot from './components/Chatbot';
 import Dashboard from './components/Dashboard';
 import Map from './components/map';
+
 function OceanVizApp() {
     const [chatOpen, setChatOpen] = useState(false);
     const [activePage, setActivePage] = useState('Dashboard');
